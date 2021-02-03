@@ -14,4 +14,7 @@
     z-index: 1 !important;
     padding: 6px;
     font-weight: bold;
+    border-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
     }
