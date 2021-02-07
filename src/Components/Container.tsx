@@ -28,6 +28,8 @@ import f24 from '../geoJSONfile/prd-prison_inner.json';
 import f25 from '../geoJSONfile/prd-prison_outer.json';
 import f26 from '../geoJSONfile/prd-privateRunway3_outer.json';
 import f27 from '../geoJSONfile/prd-waterAerodrome3_outer.json';
+const axios = require('axios').default;
+
 
 
 const files = [
@@ -92,16 +94,6 @@ const fileNames = [
 
 const array:any[] = [];
 
-/*
-if ("geolocation" in navigator) {
-    console.log("Available");
-} else {
-    console.log("Not Available");
-}
-*/
-
-
-
 function processFiles(arr: any[]){
     arr.forEach((data: any) => {
         array.push({
@@ -111,6 +103,8 @@ function processFiles(arr: any[]){
         );
     })
 }
+
+var markerArray: any = []
 
 
 processFiles(files);
@@ -158,6 +152,7 @@ export const Container: React.FC = (props) => {
           });
     }, [])
 
+
     useEffect(()=>{
         getMap?.once('load', ()=>{
             var layers:any;
@@ -169,6 +164,7 @@ export const Container: React.FC = (props) => {
                 break;
                 }
             }
+            
             array.forEach((element: any, index) => {
                 getMap.addSource(fileNames[index], element);
                 getMap.addLayer({
@@ -177,7 +173,7 @@ export const Container: React.FC = (props) => {
                     'source': fileNames[index],
                     'layout': {},
                     'paint': {
-                        'fill-color': '#00FF00',
+                        'fill-color': '#00ff00',
                         'fill-opacity': 0.8,
                     },
                     'maxzoom': 15
@@ -191,7 +187,7 @@ export const Container: React.FC = (props) => {
                     'minzoom': 15,
                     'layout': { },
                     'paint': {
-                        'fill-extrusion-color': '#FF0000',
+                        'fill-extrusion-color': '#00FF00',
                         'fill-extrusion-opacity': 0.8,
                         'fill-extrusion-height': [ 
                             'interpolate',
@@ -216,12 +212,39 @@ export const Container: React.FC = (props) => {
                 labelLayerID
                 );
             })
+
+            window.setInterval(() => {
+                axios.get('http://localhost:7071/api/HttpTrigger1?getLatLong')
+                            .then(function(response:any){
+                                console.log("Fetching latest data => (success)");
+                                const { data } = response;
+                                data.LatLong.forEach((el:any, index:any) => {
+                                    // DOM style element :)
+                                    var domel = document.createElement('div');
+                                    domel.className = 'marker';
+                                    setMarker(new mapboxgl.Marker({
+                                        'element': domel,
+                                        'rotation': data.DeviceRotation[index]
+                                    })
+                                    .setLngLat([el[1], el[0]])
+                                    .addTo(getMap)
+                                    )
+                                });
+                            })
+                            .catch(function(error:any){
+                                console.log(error);
+                                console.log("Fetching latest data => (error)");
+                            })
+
+                        }, 4000);
+
             setMarker(new mapboxgl.Marker({
-                'color': "#FF0000",
+                'color': '#555',
             })
             .setLngLat([userCoords[1], userCoords[0]])
             .addTo(getMap)
             )
+
             getMap.flyTo(
                 {
                  'center': [userCoords[1], userCoords[0]]   
@@ -230,6 +253,8 @@ export const Container: React.FC = (props) => {
         })
         
     },[getMap])
+
+
     
 
     return (
