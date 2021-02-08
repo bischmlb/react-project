@@ -1,4 +1,7 @@
 const axios = require('axios').default;
+const fetch = require('node-fetch');
+
+
 
 
 function fetchAllCoordsEvery4(){
@@ -6,7 +9,7 @@ function fetchAllCoordsEvery4(){
                         .then(function(response){
                             const { data } = response;
                             console.log(data.LatLong);
-                            console.log(response);
+                            console.log(data);
                         })
                         .catch(function(error){
                             console.log(error);
@@ -26,5 +29,35 @@ function fetchAllCoordsEvery4(){
         fetchAllCoordsEvery4();
     });
     }*/
-    fetchAllCoordsEvery4();
+  //  fetchAllCoordsEvery4();
   }
+
+  const openweathermapApiKey = '8a5cef3c50ea0a117d92fef78c859ce0';
+  const fetchWeatherData = (lat, long) =>{
+    axios.get('https://api.openweathermap.org/data/2.5/forecast?lat=' + lat.toString() + '&lon=' + long.toString() + '&appid='+ openweathermapApiKey,
+    {
+        headers: {
+          'Accept': 'application/json',
+          'Content-type': 'application/json',
+        },
+        crossdomain: true,
+        //withCredentials: true,
+
+        })
+    .then((response) => {
+        const { data } = response;
+        console.log(data);
+    })
+    .catch((error)=>{
+        console.log(error);
+    })
+}
+
+  
+
+
+  fetchWeatherData(55, 12);
+  //fetchWeatherData2();
+
+
+

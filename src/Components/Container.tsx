@@ -30,8 +30,6 @@ import f26 from '../geoJSONfile/prd-privateRunway3_outer.json';
 import f27 from '../geoJSONfile/prd-waterAerodrome3_outer.json';
 const axios = require('axios').default;
 
-
-
 const files = [
     f1,
     f2,
@@ -92,17 +90,19 @@ const fileNames = [
     '../geoJSONfile/prd-waterAerodrome3_outer.json',
 ]
 
-const array:any[] = [];
+const array: any[] = [];
 
-function processFiles(arr: any[]){
+function processFiles(arr: any[]) {
     arr.forEach((data: any) => {
         array.push({
             type: 'geojson',
             data
-            }
+        }
         );
     })
 }
+
+const openweathermapApiKey = '8a5cef3c50ea0a117d92fef78c859ce0';
 
 var markerArray: any = []
 
@@ -119,11 +119,11 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibmF2aWFpci11dG0iLCJhIjoiY2tpdWtxdzJqMGNiMzJ0b
 
 
 export const Container: React.FC = (props) => {
-    var userCoords:number[] = [];
-    navigator.geolocation.getCurrentPosition(function(position) {
-    userCoords.push(position.coords.latitude);
-    userCoords.push(position.coords.longitude);
-     });
+    var userCoords: number[] = [];
+    navigator.geolocation.getCurrentPosition(function (position) {
+        userCoords.push(position.coords.latitude);
+        userCoords.push(position.coords.longitude);
+    });
 
 
     const [getLatLng, setLatLng] = useState<{ lat: number, long: number }>({ lat: 55.39594, long: 10.38831 });
@@ -131,11 +131,11 @@ export const Container: React.FC = (props) => {
     const mapContainer = useRef<HTMLDivElement>(null);
     const [getZoom, setZoom] = useState<number>(15.5);
     const [getMarker, setMarker] = useState<mapboxgl.Marker>();
-    const [getUserLatLong, setUserLatLong] = useState<{latUser: number, longUser: number}>({latUser: userCoords[0], longUser: userCoords[1]});
+    const [getUserLatLong, setUserLatLong] = useState<{ latUser: number, longUser: number }>({ latUser: userCoords[0], longUser: userCoords[1] });
 
 
     useEffect(() => {
-        const {lat, long} = getLatLng;
+        const { lat, long } = getLatLng;
 
         if (mapContainer.current) {
             setMap(new mapboxgl.Map({
@@ -148,28 +148,31 @@ export const Container: React.FC = (props) => {
 
         window.addEventListener('scroll', (event) => {
             const zoom = getZoom;
-            
-          });
+
+        });
     }, [])
 
 
-    useEffect(()=>{
-        getMap?.once('load', ()=>{
-            var layers:any;
+    useEffect(() => {
+
+        getMap?.once('load', () => {
+
+            var layers: any;
             layers = getMap.getStyle().layers;
-            var labelLayerID:any;
+            var labelLayerID: any;
             for (var i = 0; i < layers.length; i++) {
                 if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-                labelLayerID = layers[i].id;
-                break;
+                    labelLayerID = layers[i].id;
+                    break;
                 }
             }
-            
+
             array.forEach((element: any, index) => {
+
                 getMap.addSource(fileNames[index], element);
                 getMap.addLayer({
                     'id': fileNames[index],
-                    'type':'fill',
+                    'type': 'fill',
                     'source': fileNames[index],
                     'layout': {},
                     'paint': {
@@ -185,11 +188,11 @@ export const Container: React.FC = (props) => {
                     'filter': ['==', 'extrude', 'true'],
                     'type': 'fill-extrusion',
                     'minzoom': 15,
-                    'layout': { },
+                    'layout': {},
                     'paint': {
                         'fill-extrusion-color': '#00FF00',
                         'fill-extrusion-opacity': 0.8,
-                        'fill-extrusion-height': [ 
+                        'fill-extrusion-height': [
                             'interpolate',
                             ['linear'],
                             ['zoom'],
@@ -207,62 +210,135 @@ export const Container: React.FC = (props) => {
                             15.05,
                             ['get', 'min-height']
                         ],
-                     }
-                },
-                labelLayerID
+                    }
+                }
+                ,
+                    labelLayerID
                 );
+
             })
 
+            getMap.on('click', function (e) {
+                    
+                axios.get('https://api.openweathermap.org/data/2.5/forecast?lat=' + e.lngLat.lat.toString() + '&lon=' + e.lngLat.lng.toString() + '&appid='+ openweathermapApiKey,
+                {
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-type': 'application/json',
+                    },
+                    crossdomain: true,
+                    //withCredentials: true,
+            
+                    })
+                .then((response: any) => {
+                    const { data } = response;
+                    console.log(data.city);
+                    new mapboxgl.Popup()
+                        .setLngLat(e.lngLat)
+                        .setHTML(`<div>
+                        <p> Område navn: ${data.city.name} </p>
+                        <p> </p>
+
+                        </div>`)
+                        .addTo(getMap);
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                })
+                });
+                
             window.setInterval(() => {
                 axios.get('http://localhost:7071/api/HttpTrigger1?getLatLong')
-                            .then(function(response:any){
-                                console.log("Fetching latest data => (success)");
-                                const { data } = response;
-                                data.LatLong.forEach((el:any, index:any) => {
-                                    // DOM style element :)
-                                    var domel = document.createElement('div');
-                                    domel.className = 'marker';
-                                    setMarker(new mapboxgl.Marker({
-                                        'element': domel,
-                                        'rotation': data.DeviceRotation[index]
-                                    })
-                                    .setLngLat([el[1], el[0]])
-                                    .addTo(getMap)
-                                    )
-                                });
-                            })
-                            .catch(function(error:any){
-                                console.log(error);
-                                console.log("Fetching latest data => (error)");
-                            })
+                    .then(function (response: any) {
+                        //console.log("Fetching latest data => ...");
+                        const { data } = response;
+                        // DOM style element :)
+                        var domel = document.createElement('div');
+                        domel.className = 'marker';
 
-                        }, 4000);
+                        // Hvis source findes, fjerner vi det så vi kan adde en ny, ellers er det første source + layer og vi adder
+                        if (getMap.getSource('airborne-devicesSource')) {
+                            getMap.removeLayer('airborne-devicesLayer');
+                            getMap.removeSource('airborne-devicesSource');
+                        }
 
+
+                        getMap.addSource('airborne-devicesSource', {
+                            type: 'geojson',
+                            data
+                        });
+
+                        getMap.addLayer({
+                            'id': 'airborne-devicesLayer',
+                            'type': 'symbol',
+                            'source': 'airborne-devicesSource',
+                            'layout': {
+                                'icon-image': 'cat',
+                                // get the title name from the source's "title" property
+                                'text-field': ['get', 'title'],
+                                'text-font': [
+                                    'Open Sans Semibold',
+                                    'Arial Unicode MS Bold'
+                                ],
+                                'text-offset': [0, 1.25],
+                                'text-anchor': 'top'
+                            }
+                        });
+
+                    })
+                    .catch(function (error: any) {
+                        console.log("Fetching latest data => " + error);
+                    })
+            }, 4000);
+
+            /*
+                        window.setInterval(() => {
+                            axios.get('http://localhost:7071/api/HttpTrigger1?getLatLong')
+                                        .then(function(response:any){
+                                            console.log("Fetching latest data => (success)");
+                                            const { data } = response;
+                                            data.LatLong.forEach((el:any, index:any) => {
+                                                // DOM style element :)
+                                                var domel = document.createElement('div');
+                                                domel.className = 'marker';
+                                                setMarker(new mapboxgl.Marker({
+                                                    'element': domel,
+                                                    'rotation': data.DeviceRotation[index]
+                                                })
+                                                .setLngLat([el[1], el[0]])
+                                                .addTo(getMap)
+                                                )
+                                            });
+                                        })
+                                        .catch(function(error:any){
+                                            console.log(error);
+                                            console.log("Fetching latest data => (error)");
+                                        })
+        
+            */
             setMarker(new mapboxgl.Marker({
                 'color': '#555',
             })
-            .setLngLat([userCoords[1], userCoords[0]])
-            .addTo(getMap)
+                .setLngLat([userCoords[1], userCoords[0]])
+                .addTo(getMap)
             )
 
             getMap.flyTo(
                 {
-                 'center': [userCoords[1], userCoords[0]]   
+                    'center': [userCoords[1], userCoords[0]]
                 }
             )
         })
-        
-    },[getMap])
 
+    }, [getMap])
 
-    
 
     return (
         <div>
             <h1>
-                <div className='sidebarStyle'> 
+                <div className='sidebarStyle'>
                     Restriktionszoner Danmark <br />
-                    </div>
+                </div>
                 <div ref={mapContainer} className="mapContainer"> </div>
             </h1>
         </div>
