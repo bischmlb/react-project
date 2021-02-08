@@ -195,7 +195,6 @@ export const Container: React.FC = (props) => {
     useEffect(() => {
 
         getMap?.once('load', () => {
-
             var layers: any;
             layers = getMap.getStyle().layers;
             var labelLayerID: any;
@@ -257,8 +256,8 @@ export const Container: React.FC = (props) => {
 
             })
 
+            // Click event
             getMap.on('click', function (e) {
-                    
                 axios.get('https://api.openweathermap.org/data/2.5/forecast?lat=' + e.lngLat.lat.toString() + '&lon=' + e.lngLat.lng.toString() + '&appid='+ openweathermapApiKey,
                 {
                     headers: {
@@ -369,32 +368,7 @@ export const Container: React.FC = (props) => {
                         console.log("Fetching latest data => " + error);
                     })
             }, 4000);
-
-            /*
-                        window.setInterval(() => {
-                            axios.get('http://localhost:7071/api/HttpTrigger1?getLatLong')
-                                        .then(function(response:any){
-                                            console.log("Fetching latest data => (success)");
-                                            const { data } = response;
-                                            data.LatLong.forEach((el:any, index:any) => {
-                                                // DOM style element :)
-                                                var domel = document.createElement('div');
-                                                domel.className = 'marker';
-                                                setMarker(new mapboxgl.Marker({
-                                                    'element': domel,
-                                                    'rotation': data.DeviceRotation[index]
-                                                })
-                                                .setLngLat([el[1], el[0]])
-                                                .addTo(getMap)
-                                                )
-                                            });
-                                        })
-                                        .catch(function(error:any){
-                                            console.log(error);
-                                            console.log("Fetching latest data => (error)");
-                                        })
-        
-            */
+                       
             setMarker(new mapboxgl.Marker({
                 'color': '#555',
             })
