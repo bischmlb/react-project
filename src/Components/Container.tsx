@@ -92,6 +92,45 @@ const fileNames = [
 
 const array: any[] = [];
 
+const scanDates = (list: any) => {
+    var day1: string = ""
+    var day2: string = ""
+    var day3: string = ""
+    var day4: string = ""
+    var day5: string = ""
+    var allDays = [day1, day2, day3, day4, day5];
+    var currObj = list[0].dt_txt;
+    var index = 0;
+
+    list.forEach((element: any) => {
+        if(element.dt_txt.split(" ")[0] == currObj.split(" ")[0]){
+            try {
+            allDays[index] = element.dt_txt.split(" ")[0];
+            } catch {
+                console.log("no more dates");
+            }
+        } else {
+            currObj = element.dt_txt;
+            index += 1;
+        }
+    });
+    return allDays;
+}
+
+const month = new Array();
+month[0] = "Januar";
+month[1] = "Februar";
+month[2] = "Marts";
+month[3] = "April";
+month[4] = "Maj";
+month[5] = "Juni";
+month[6] = "Juli";
+month[7] = "August";
+month[8] = "September";
+month[9] = "Oktober";
+month[10] = "November";
+month[11] = "December";
+
 function processFiles(arr: any[]) {
     arr.forEach((data: any) => {
         array.push({
@@ -232,11 +271,31 @@ export const Container: React.FC = (props) => {
                     })
                 .then((response: any) => {
                     const { data } = response;
-                    console.log(data.city);
+                    var d = new Date()
+                    var n = d.getMonth();
+                    var allDays = scanDates(data.list);
                     new mapboxgl.Popup()
                         .setLngLat(e.lngLat)
-                        .setHTML(`<div>
-                        <p> Område navn: ${data.city.name} </p>
+                        .setHTML(`<div style="">
+                        <div style="color: #333; font-weight: bold; width: 100%">
+                        <div style="background-color: rgba(255,255,255,0.8); border-top-left-radius: 5px; border-top-right-radius: 25px; box-shadow: 0px 0px 0px 0px; border: 1px solid #666; border-bottom: 3px solid #444; border-left: 3px solid #444; border-top: 3px solid #444; border-right: 2px solid #444;">
+                        <h2 style="border-bottom: 5px solid #444; padding-bottom: 15px; padding-left: 20px; padding-right: 20px;"> ${data.city.name} </h2>
+                        <h3 style=" padding-bottom: 0px;">&#128343; Nu</h3>
+                        <div style="display: flex">
+                        <div style=" margin-bottom: 15px; color: #333; font-size: 14px; font-weight: bold; width: 100%">
+                        ${(Math.round(parseInt(data.list[0].main.temp)-273.15))} &deg; | &#x1F326; ${data.list[0].weather[0].main} | &#9780 ${data.list[0].wind.speed} m/s
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        <div style="background-color: rgba(255,255,255,0.4); border-color: #444; border-bottom-left-radius: 5px; border-bottom-right-radius: 25px; box-shadow: 0px 0px 0px 0px; border-left: 3px solid #444; border-right: 2px solid #444; border-bottom: 3px solid #444; margin-top: -7%;" class="row">
+                        <h3 style="padding-top: 5px; color: #333; "> 4-dags </h3>
+                        <div style="display: flex;" class="row">
+                        <div style="width: 100%">${parseInt(allDays[1].split("-")[2]) + ". " + month[parseInt(allDays[1].split("-")[1])-1]}</div>
+                        <div style="width: 100%">${parseInt(allDays[2].split("-")[2]) + ". " + month[parseInt(allDays[2].split("-")[1])-1]}</div>
+                        <div style="width: 100%">${parseInt(allDays[3].split("-")[2]) + ". " + month[parseInt(allDays[3].split("-")[1])-1]}</div>
+                        <div style="width: 100%">${parseInt(allDays[4].split("-")[2]) + ". " + month[parseInt(allDays[4].split("-")[1])-1]}</div>
+                        </div>
                         <p> </p>
 
                         </div>`)

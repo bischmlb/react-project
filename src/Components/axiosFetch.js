@@ -1,5 +1,4 @@
 const axios = require('axios').default;
-const fetch = require('node-fetch');
 
 
 
@@ -46,7 +45,7 @@ function fetchAllCoordsEvery4(){
         })
     .then((response) => {
         const { data } = response;
-        console.log(data);
+        console.log(data.list[0].dt_txt);
     })
     .catch((error)=>{
         console.log(error);
