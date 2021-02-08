@@ -291,10 +291,30 @@ export const Container: React.FC = (props) => {
                         <div style="background-color: rgba(255,255,255,0.4); border-color: #444; border-bottom-left-radius: 5px; border-bottom-right-radius: 25px; box-shadow: 0px 0px 0px 0px; border-left: 3px solid #444; border-right: 2px solid #444; border-bottom: 3px solid #444; margin-top: -7%;" class="row">
                         <h3 style="padding-top: 5px; color: #333; "> 4-dags </h3>
                         <div style="display: flex;" class="row">
-                        <div style="width: 100%">${parseInt(allDays[1].split("-")[2]) + ". " + month[parseInt(allDays[1].split("-")[1])-1]}</div>
-                        <div style="width: 100%">${parseInt(allDays[2].split("-")[2]) + ". " + month[parseInt(allDays[2].split("-")[1])-1]}</div>
-                        <div style="width: 100%">${parseInt(allDays[3].split("-")[2]) + ". " + month[parseInt(allDays[3].split("-")[1])-1]}</div>
-                        <div style="width: 100%">${parseInt(allDays[4].split("-")[2]) + ". " + month[parseInt(allDays[4].split("-")[1])-1]}</div>
+                        <div style="width: 100%">
+                        ${
+                            parseInt(allDays[1].split("-")[2]) + ". " 
+                            + month[parseInt(allDays[1].split("-")[1])-1]
+                        }
+                        </div>
+                        <div style="width: 100%">
+                        ${
+                            parseInt(allDays[2].split("-")[2]) + ". " 
+                            + month[parseInt(allDays[2].split("-")[1])-1]
+                        }
+                        </div>
+                        <div style="width: 100%">
+                        ${
+                            parseInt(allDays[3].split("-")[2]) + ". " 
+                            + month[parseInt(allDays[3].split("-")[1])-1]
+                        }
+                        </div>
+                        <div style="width: 100%">
+                        ${
+                            parseInt(allDays[4].split("-")[2]) + ". " 
+                            + month[parseInt(allDays[4].split("-")[1])-1]
+                        }
+                        </div>
                         </div>
                         <p> </p>
 
