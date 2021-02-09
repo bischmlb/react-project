@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.2.1",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
+    "@turf/turf": "^6.3.0",
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^26.0.20",
     "@types/node": "^12.19.15",
@@ -14,10 +16,15 @@
     "axios": "^0.21.1",
     "geojson": "^0.5.0",
     "mapbox-gl": "^2.0.1",
+    "mapbox-gl-draw-circle": "^1.1.2",
+    "mapbox-gl-draw-cut-polygon-mode": "^1.0.1",
+    "mapbox-gl-draw-passing-mode": "^0.1.0",
     "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-dropdown": "^1.9.2",
     "react-scripts": "^4.0.2",
+    "turf": "^3.0.14",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

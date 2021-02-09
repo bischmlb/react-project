@@ -45,7 +45,7 @@ function fetchAllCoordsEvery4(){
         })
     .then((response) => {
         const { data } = response;
-        console.log(data.list[0].dt_txt);
+        console.log(data.list[0]);
     })
     .catch((error)=>{
         console.log(error);

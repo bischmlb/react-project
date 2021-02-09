@@ -29,10 +29,31 @@
     cursor: pointer;
 }
 
+.mapbox-popup{
+    transform:none !important;
+    top: 0%;
+    left: 10x;
+    
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-center .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip, 
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip{
+    display:none !important;
+}
+
 .mapboxgl-popup-close-button{
-    display: hidden;
+    display: none;
 }
 
 .mapboxgl-popup-content{
     background-color: rgba(255, 255, 255, 0);
+    width: 150%;
+    height: 200px;
 }
